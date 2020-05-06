@@ -24,7 +24,18 @@ type errorRes struct {
 	ErrRes string `json:"errRes" c:"错误返回信息"`
 }
 
+type bodyTpl struct {
+	Code string      `json:"code"`
+	Msg  string      `json:"msg,omitempty"`
+	Data interface{} `json:"data"`
+}
+
+func (b *bodyTpl) SetData(d interface{}) {
+	b.Data = d
+}
+
 func ExampleGenDocs() {
+	BaseRes = &bodyTpl{Code: "ok"}
 	rootRouter := router.New(``)
 	setup(rootRouter)
 	GenDocs(rootRouter, filepath.Join(sourceDir(), `apidocs`))
@@ -44,8 +55,8 @@ func setup(r *router.R) {
 		Req(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息req2`, nil).
 		Res(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息res1`, &res{}).
 		Res(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息res2`, nil).
-		ErrRes(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息err1`, `something-wrong`, `some thing wrong`, &errorRes{}).
-		ErrRes(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息err2`, `something-wrong2`, `some thing wrong2`, nil)
+		ErrRes(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息err1`, bodyTpl{`something-wrong`, `some thing wrong`, &errorRes{}}).
+		ErrRes(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息err2`, bodyTpl{`something-wrong2`, `some thing wrong2`, nil})
 
 	saleRouter := r.Group(`/sales`).Title(`销售`)
 	saleOrderRouter := saleRouter.Group(`/order`).Title(`订单`)

@@ -13,7 +13,7 @@ import (
 	"github.com/lovego/apidoc/router"
 )
 
-var BaseRes = router.ResBodyTpl{Code: "ok", Message: "success"}
+var BaseRes router.ResBody = &router.ResBodyTpl{Code: "ok", Message: "success"}
 
 func GenDocs(r *router.R, workDir string) {
 	if err := os.RemoveAll(workDir); err != nil {
@@ -150,7 +150,7 @@ func parseEntryDoc(r *router.R, basePath string) (content string) {
 			hasResBody = true
 			res := BaseRes
 			if o.Body != nil {
-				res.Data = defaults.Set(o.Body)
+				res.SetData(defaults.Set(o.Body))
 			}
 			docs = append(docs, "\n"+`## 返回体说明`)
 			if o.Desc != `` {
@@ -160,20 +160,13 @@ func parseEntryDoc(r *router.R, basePath string) (content string) {
 			docs = append(docs, parseJsonDoc(&res))
 			docs = append(docs, "```")
 		case router.TypeErrResBody:
-			if obj, ok := o.Body.(router.ResBodyTpl); ok {
-				docs = append(docs, "\n"+`## 返回错误说明: 错误码（`+obj.Code+`）`)
-				if o.Desc != `` {
-					docs = append(docs, "\n"+o.Desc)
-				}
-				if obj.Data != nil {
-					obj.Data = defaults.Set(obj.Data)
-					docs = append(docs, "```json5")
-					docs = append(docs, parseJsonDoc(&obj))
-					docs = append(docs, "```")
-				}
-			} else {
-				panic(`errResBody type error`)
+			docs = append(docs, "\n"+`## 返回错误说明`)
+			if o.Desc != `` {
+				docs = append(docs, "\n"+o.Desc)
 			}
+			docs = append(docs, "```json5")
+			docs = append(docs, parseJsonDoc(defaults.Set(o.Body)))
+			docs = append(docs, "```")
 		}
 	}
 

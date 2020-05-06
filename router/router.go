@@ -5,10 +5,18 @@ type fieldCommentPair struct {
 	Comment string
 }
 
+type ResBody interface {
+	SetData(interface{})
+}
+
 type ResBodyTpl struct {
 	Code    string      `json:"code" c:"ok 表示成功，其他表示错误代码"`
 	Message string      `json:"message" c:"与code对应的描述信息"`
 	Data    interface{} `json:"data"`
+}
+
+func (res *ResBodyTpl) SetData(d interface{}) {
+	res.Data = d
 }
 
 const (

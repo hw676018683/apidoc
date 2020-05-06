@@ -83,22 +83,14 @@ func (r *R) Res(desc string, d interface{}) *R {
 }
 
 // ErrRes add error response bodies.
-func (r *R) ErrRes(desc, code string, msg string, data interface{}) *R {
+func (r *R) ErrRes(desc string, data interface{}) *R {
 	if data == nil {
 		return r
-	}
-	if reflect.TypeOf(data).Kind() != reflect.Ptr {
-		panic(`ErrRes need pointer`)
-	}
-	obj := ResBodyTpl{
-		Code:    code,
-		Message: msg,
-		Data:    data,
 	}
 	roundTripInfo := roundTripBody{
 		Type: TypeErrResBody,
 		Desc: desc,
-		Body: obj,
+		Body: data,
 	}
 	r.Info.RoundTripBodies = append(r.Info.RoundTripBodies, roundTripInfo)
 	return r
