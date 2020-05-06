@@ -25,8 +25,6 @@ import (
 	"sync"
 	"unicode"
 	"unicode/utf8"
-
-	"github.com/lovego/struct_tag"
 )
 
 // Marshal returns the JSON encoding of v.
@@ -1157,12 +1155,12 @@ func typeFields(t reflect.Type) []field {
 					}
 					// FOR DOC START :
 
-					comment, _ := struct_tag.Lookup(string(sf.Tag), `doc`)
+					comment := sf.Tag.Get(`doc`)
 					if comment == `` {
-						comment, _ = struct_tag.Lookup(string(sf.Tag), `c`)
+						comment = sf.Tag.Get(`c`)
 					}
 					if comment == `` {
-						comment, _ = struct_tag.Lookup(string(sf.Tag), `comment`)
+						comment = sf.Tag.Get(`comment`)
 					}
 					if comment != `` {
 						r := regexp.MustCompile(`[\s]+`)
