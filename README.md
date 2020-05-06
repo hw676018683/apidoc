@@ -1,12 +1,5 @@
 # apidoc
-Auto generate api docs from goa routers.
-
-## Usages
-### Routers
-Replace *goa.RouterGroup with *router.R
-```
-rootRouter := router.NewRoot(&goa.New().RouterGroup)
-```
+Auto generate api docs.
 
 ### Router docs
 
@@ -25,10 +18,7 @@ There are two ways to add docs to a router.
 
 `Doc` add docs in one line for common situation. 
 ```
-router.PostX(`/(\d+)`, func(c *goa.Context) {
-    s := helpers.GetSession(c)
-    ...
-}).Doc(`标题收货`, `orderId:采购订单ID`, `queryArg1:请求Query参数1`, &detail.DetailRes, &detail.DetailRes{})
+router.PostX(`/(\d+)`).Doc(`标题收货`, `orderId:采购订单ID`, `queryArg1:请求Query参数1`, &detail.DetailRes, &detail.DetailRes{})
 ```
 ##### More docs.
 
@@ -49,9 +39,5 @@ router.
 
 Run the code below at anywhere you like.
 ```
-router.ForDoc = true 
-
-... // setup routers.
-
-GenDocs(r, `apidocs`)
+GenDocs(r, `api_dir`)
 ```

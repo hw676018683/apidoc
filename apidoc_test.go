@@ -1,10 +1,10 @@
 package apidoc
 
 import (
-	"github.com/lovego/apidoc/router"
-	"github.com/lovego/fs"
-	"github.com/lovego/goa"
 	"path/filepath"
+	"runtime"
+
+	"github.com/lovego/apidoc/router"
 )
 
 type req struct {
@@ -26,9 +26,9 @@ type errorRes struct {
 
 func ExampleGenDocs() {
 	router.ForDoc = true
-	rootRouter := router.NewRoot(&goa.New().RouterGroup)
+	rootRouter := router.New(``)
 	setup(rootRouter)
-	GenDocs(rootRouter, filepath.Join(fs.SourceDir(), `apidocs`))
+	GenDocs(rootRouter, filepath.Join(sourceDir(), `apidocs`))
 
 	// Output:
 }
@@ -37,7 +37,7 @@ func setup(r *router.R) {
 	purchaseRouter := r.Group(`/purchases`).Title(`采购`)
 	arlRouter := purchaseRouter.Group(`/arrival`).Title(`到货单`)
 
-	arlRouter.Post(`/book`, func(c *goa.Context) {}).Title(`订餐`).
+	arlRouter.Post(`/book`).Title(`订餐`).
 		Desc(`描述信息描述信息描述信息描述信息描述信息描述信息描述信息`).
 		Regex(`id:公司ID`).
 		Query(`qid:公司QID;qid2:公司`).
@@ -50,8 +50,13 @@ func setup(r *router.R) {
 
 	saleRouter := r.Group(`/sales`).Title(`销售`)
 	saleOrderRouter := saleRouter.Group(`/order`).Title(`订单`)
-	saleOrderRouter.GetX(`/detail/(\d+)`, func(c *goa.Context) {}).
+	saleOrderRouter.Get(`/detail/(\d+)`).
 		Doc(`获取订单详情`, `ID:订单ID`, `name:用户名`, nil, nil)
-	saleOrderRouter.PutX(`/detail/(\d+)`, func(c *goa.Context) {}).
+	saleOrderRouter.Put(`/detail/(\d+)`).
 		Doc(`更新订单详情`, `ID:订单ID`, `name:用户名`, &req{}, &res{})
+}
+
+func sourceDir() string {
+	_, filename, _, _ := runtime.Caller(1)
+	return filepath.Dir(filename)
 }

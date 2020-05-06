@@ -1,17 +1,16 @@
 package apidoc
 
 import (
-	"github.com/lovego/apidoc/router"
 	"io/ioutil"
 	"log"
 	"os"
-	//"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/lovego/apidoc/defaults"
 	"github.com/lovego/apidoc/json_doc"
+	"github.com/lovego/apidoc/router"
 )
 
 var BaseRes = router.ResBodyTpl{Code: "ok", Message: "success"}
@@ -122,7 +121,7 @@ func parseEntryDoc(r *router.R, basePath string) (content string) {
 
 	// RegComments
 	if len(r.Info.RegComments) > 0 {
-		docs = append(docs, "\n"+`## 正则参数说明`)
+		docs = append(docs, "\n"+`## Path 参数说明`)
 		for _, o := range r.Info.RegComments {
 			docs = append(docs, `- `+o.Field+`: `+o.Comment)
 		}

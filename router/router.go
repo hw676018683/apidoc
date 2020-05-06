@@ -1,9 +1,5 @@
 package router
 
-import (
-	"github.com/lovego/goa"
-)
-
 type fieldCommentPair struct {
 	Field   string
 	Comment string
@@ -50,16 +46,11 @@ type routerInfo struct {
 }
 
 type R struct {
-	Info        routerInfo
-	RouterGroup *goa.RouterGroup
-	Nodes       []*R
+	Info  routerInfo
+	Nodes []*R
 }
 
-func NewRoot(r *goa.RouterGroup) *R {
-	return New(r, ``)
-}
-
-func New(r *goa.RouterGroup, path string) *R {
+func New(path string) *R {
 	return &R{
 		Info: routerInfo{
 			Path:            path,
@@ -68,89 +59,52 @@ func New(r *goa.RouterGroup, path string) *R {
 			QueryComments:   make([]fieldCommentPair, 0),
 			RoundTripBodies: make([]roundTripBody, 0),
 		},
-		RouterGroup: r,
-		Nodes:       make([]*R, 0),
+		Nodes: make([]*R, 0),
 	}
 }
 
-func NewEntry(r *goa.RouterGroup, path string) *R {
-	entry := New(r, path)
+func NewEntry(path string) *R {
+	entry := New(path)
 	entry.Info.IsEntry = true
 	return entry
 }
 
 func (r *R) Group(path string) *R {
-	group := r.RouterGroup.Group(path)
-	child := New(group, path)
+	child := New(path)
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
 
-func (r *R) GetX(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.GetX(path, handlerFunc), path)
+func (r *R) Get(path string) *R {
+	child := NewEntry(path)
 	child.Info.Method = `GET`
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
 
-func (r *R) Get(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.Get(path, handlerFunc), path)
-	child.Info.Method = `GET`
-	r.Nodes = append(r.Nodes, child)
-	return child
-}
-
-func (r *R) PostX(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.PostX(path, handlerFunc), path)
+func (r *R) Post(path string) *R {
+	child := NewEntry(path)
 	child.Info.Method = `POST`
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
 
-func (r *R) Post(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.Post(path, handlerFunc), path)
-	child.Info.Method = `POST`
-	r.Nodes = append(r.Nodes, child)
-	return child
-}
-
-func (r *R) PutX(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.PutX(path, handlerFunc), path)
+func (r *R) Put(path string) *R {
+	child := NewEntry(path)
 	child.Info.Method = `PUT`
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
 
-func (r *R) Put(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.Put(path, handlerFunc), path)
-	child.Info.Method = `PUT`
-	r.Nodes = append(r.Nodes, child)
-	return child
-}
-
-func (r *R) PatchX(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.PatchX(path, handlerFunc), path)
+func (r *R) Patch(path string) *R {
+	child := NewEntry(path)
 	child.Info.Method = `PATCH`
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
 
-func (r *R) Patch(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.Patch(path, handlerFunc), path)
-	child.Info.Method = `PATCH`
-	r.Nodes = append(r.Nodes, child)
-	return child
-}
-
-func (r *R) DeleteX(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.DeleteX(path, handlerFunc), path)
-	child.Info.Method = `DELETE`
-	r.Nodes = append(r.Nodes, child)
-	return child
-}
-
-func (r *R) Delete(path string, handlerFunc goa.HandlerFunc) *R {
-	child := NewEntry(r.RouterGroup.Delete(path, handlerFunc), path)
+func (r *R) Delete(path string) *R {
+	child := NewEntry(path)
 	child.Info.Method = `DELETE`
 	r.Nodes = append(r.Nodes, child)
 	return child
