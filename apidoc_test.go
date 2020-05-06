@@ -25,7 +25,6 @@ type errorRes struct {
 }
 
 func ExampleGenDocs() {
-	router.ForDoc = true
 	rootRouter := router.New(``)
 	setup(rootRouter)
 	GenDocs(rootRouter, filepath.Join(sourceDir(), `apidocs`))

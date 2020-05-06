@@ -6,15 +6,10 @@ import (
 	"strings"
 )
 
-var ForDoc = false
-
 // Title set router Title.
 // Don't contains '/'
 // Don't start with + or - or .
 func (r *R) Title(t string) *R {
-	if !ForDoc {
-		return r
-	}
 	t = strings.TrimSpace(t)
 	if t != `` {
 		if strings.ContainsAny(t, `/`) {
@@ -33,45 +28,30 @@ func (r *R) Title(t string) *R {
 
 // Desc set router descriptions.
 func (r *R) Desc(d string) *R {
-	if !ForDoc {
-		return r
-	}
 	r.Info.Desc = d
 	return r
 }
 
 // ContentType set request content type.
 func (r *R) ContentType(s string) *R {
-	if !ForDoc {
-		return r
-	}
 	r.Info.ReqContentType = strings.TrimSpace(s)
 	return r
 }
 
 // Regex set request regex parameters.
 func (r *R) Regex(d string) *R {
-	if !ForDoc {
-		return r
-	}
 	r.Info.RegComments = parseFieldCommentPair(d)
 	return r
 }
 
 // Query set request query parameters.
 func (r *R) Query(d string) *R {
-	if !ForDoc {
-		return r
-	}
 	r.Info.QueryComments = parseFieldCommentPair(d)
 	return r
 }
 
 // Req set request body.
 func (r *R) Req(desc string, d interface{}) *R {
-	if !ForDoc {
-		return r
-	}
 	if d == nil {
 		return r
 	}
@@ -89,9 +69,6 @@ func (r *R) Req(desc string, d interface{}) *R {
 
 // Res set success response body.
 func (r *R) Res(desc string, d interface{}) *R {
-	if !ForDoc {
-		return r
-	}
 	if d != nil && reflect.TypeOf(d).Kind() != reflect.Ptr {
 		panic(`Res need pointer`)
 	}
@@ -107,9 +84,6 @@ func (r *R) Res(desc string, d interface{}) *R {
 
 // ErrRes add error response bodies.
 func (r *R) ErrRes(desc, code string, msg string, data interface{}) *R {
-	if !ForDoc {
-		return r
-	}
 	if data == nil {
 		return r
 	}
@@ -132,9 +106,6 @@ func (r *R) ErrRes(desc, code string, msg string, data interface{}) *R {
 
 // Doc provide quick set common api docs.
 func (r *R) Doc(t string, reg, query string, req, res interface{}) *R {
-	if !ForDoc {
-		return r
-	}
 	r.Title(t)
 	r.Regex(reg)
 	r.Query(query)
