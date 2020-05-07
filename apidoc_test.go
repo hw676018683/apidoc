@@ -20,7 +20,7 @@ type res struct {
 
 type errorRes struct {
 	Name   string `json:"name" c:"*名称"`
-	Age    string `json:"age" c:"*年龄"`
+	Age    string `json:"age" c:"年龄" binding:"required"`
 	ErrRes string `json:"errRes" c:"错误返回信息"`
 }
 

@@ -197,7 +197,7 @@ func parseJsonDoc(v interface{}) string {
 			str := r.ReplaceAllString(list[i], `":`)
 			comment := strings.TrimSpace(res[0][1])
 			if comment[0] == '*' {
-				comment = `【必需】` + comment
+				comment = `【必须】` + comment[1:]
 			}
 			repeatTimes := commentLineOffset - len(str)
 			if repeatTimes < 1 {
