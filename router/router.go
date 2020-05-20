@@ -89,12 +89,18 @@ func (r *R) Get(path string) *R {
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
+func (r *R) GET(path string) *R {
+	return r.Get(path)
+}
 
 func (r *R) Post(path string) *R {
 	child := NewEntry(path)
 	child.Info.Method = `POST`
 	r.Nodes = append(r.Nodes, child)
 	return child
+}
+func (r *R) POST(path string) *R {
+	return r.Post(path)
 }
 
 func (r *R) Put(path string) *R {
@@ -103,6 +109,9 @@ func (r *R) Put(path string) *R {
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
+func (r *R) PUT(path string) *R {
+	return r.Put(path)
+}
 
 func (r *R) Patch(path string) *R {
 	child := NewEntry(path)
@@ -110,10 +119,16 @@ func (r *R) Patch(path string) *R {
 	r.Nodes = append(r.Nodes, child)
 	return child
 }
+func (r *R) PATCH(path string) *R {
+	return r.Patch(path)
+}
 
 func (r *R) Delete(path string) *R {
 	child := NewEntry(path)
 	child.Info.Method = `DELETE`
 	r.Nodes = append(r.Nodes, child)
 	return child
+}
+func (r *R) DELETE(path string) *R {
+	return r.Delete(path)
 }
