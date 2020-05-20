@@ -1163,7 +1163,7 @@ func typeFields(t reflect.Type) []field {
 						comment = sf.Tag.Get(`comment`)
 					}
 					if comment != `` {
-						if sf.Tag.Get(`binding`) == `required` {
+						if strings.Contains(sf.Tag.Get(`binding`), `required`) {
 							comment = `【必须】` + comment
 						}
 
