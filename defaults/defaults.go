@@ -41,7 +41,12 @@ func setField(types []reflect.Type, field reflect.Value) {
 		field.Set(reflect.New(field.Type().Elem()))
 		setField(types, field.Elem())
 	case reflect.Interface:
-		setField(types, field.Elem())
+		if !field.Elem().IsValid() {
+			return // 没有给接口赋值，无法初始化
+		}
+		newField := reflect.New(field.Elem().Type()).Elem()
+		setField(types, newField)
+		field.Set(newField)
 	case reflect.Struct:
 		t := field.Type()
 		for _, v := range types {
