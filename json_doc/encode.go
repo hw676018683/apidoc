@@ -1162,11 +1162,10 @@ func typeFields(t reflect.Type) []field {
 					if comment == `` {
 						comment = sf.Tag.Get(`comment`)
 					}
+					if strings.Contains(sf.Tag.Get(`binding`), `required`) {
+						comment = `【必须】` + comment
+					}
 					if comment != `` {
-						if strings.Contains(sf.Tag.Get(`binding`), `required`) {
-							comment = `【必须】` + comment
-						}
-
 						r := regexp.MustCompile(`[\s]+`)
 						comment = r.ReplaceAllString(comment, ` `)
 						name += `@@@` + comment
