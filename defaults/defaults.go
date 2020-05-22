@@ -7,6 +7,10 @@ import (
 )
 
 func Set(ptr interface{}) interface{} {
+	if ptr == nil {
+		return nil
+	}
+
 	v := reflect.ValueOf(ptr)
 	if reflect.TypeOf(ptr).Kind() == reflect.Ptr {
 		v = reflect.ValueOf(ptr).Elem()

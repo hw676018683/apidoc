@@ -13,7 +13,7 @@ import (
 	"github.com/lovego/apidoc/router"
 )
 
-var BaseRes router.ResBody = &router.ResBodyTpl{Code: "ok", Message: "success"}
+var GenerateRes = generateRes
 
 func GenDocs(r *router.R, workDir string) {
 	if err := os.RemoveAll(workDir); err != nil {
@@ -148,16 +148,14 @@ func parseEntryDoc(r *router.R, basePath string) (content string) {
 			docs = append(docs, "```")
 		case router.TypeResBody:
 			hasResBody = true
-			res := BaseRes
-			if o.Body != nil {
-				res.SetData(defaults.Set(o.Body))
-			}
 			docs = append(docs, "\n"+`## 返回体说明`)
 			if o.Desc != `` {
 				docs = append(docs, "\n"+o.Desc)
 			}
+
+			res := GenerateRes(defaults.Set(o.Body))
 			docs = append(docs, "```json5")
-			docs = append(docs, parseJsonDoc(&res))
+			docs = append(docs, parseJsonDoc(res))
 			docs = append(docs, "```")
 		case router.TypeErrResBody:
 			docs = append(docs, "\n"+`## 返回错误说明`)
@@ -171,10 +169,10 @@ func parseEntryDoc(r *router.R, basePath string) (content string) {
 	}
 
 	if !hasResBody {
-		res := BaseRes
+		res := GenerateRes(nil)
 		docs = append(docs, "\n"+`## 返回体说明`)
 		docs = append(docs, "```json5")
-		docs = append(docs, parseJsonDoc(&res))
+		docs = append(docs, parseJsonDoc(res))
 		docs = append(docs, "```")
 	}
 
@@ -208,4 +206,14 @@ func parseJsonDoc(v interface{}) string {
 		}
 	}
 	return strings.Join(list, "\n")
+}
+
+type resBodyTpl struct {
+	Code    string      `json:"code" c:"ok 表示成功，其他表示错误代码"`
+	Message string      `json:"message" c:"与code对应的描述信息"`
+	Data    interface{} `json:"data"`
+}
+
+func generateRes(data interface{}) interface{} {
+	return resBodyTpl{Code: "ok", Message: "success", Data: data}
 }

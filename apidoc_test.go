@@ -30,12 +30,10 @@ type bodyTpl struct {
 	Data interface{} `json:"data"`
 }
 
-func (b *bodyTpl) SetData(d interface{}) {
-	b.Data = d
-}
-
 func ExampleGenDocs() {
-	BaseRes = &bodyTpl{Code: "ok"}
+	GenerateRes = func(data interface{}) interface{} {
+		return bodyTpl{Code: "ok", Data: data}
+	}
 	rootRouter := router.New(``)
 	setup(rootRouter)
 	GenDocs(rootRouter, filepath.Join(sourceDir(), `apidocs`))
