@@ -12,6 +12,16 @@ type req struct {
 	Req  string `json:"req" c:"请求参数"`
 }
 
+type queryBase struct {
+	Query string `form:"query" c:"查询内容"`
+}
+
+type query struct {
+	queryBase
+	Page  int `form:"page" c:"页数"`
+	Limit int `form:"limit" c:"每页个数"`
+}
+
 type res struct {
 	Name string `json:"name" doc:"名称"`
 	Age  string `json:"age" doc:"年龄"`
@@ -59,7 +69,7 @@ func setup(r *router.R) {
 	saleRouter := r.Group(`/sales`).Title(`销售`)
 	saleOrderRouter := saleRouter.Group(`/order`).Title(`订单`)
 	saleOrderRouter.Get(`/detail/(\d+)`).
-		Doc(`获取订单详情`, `ID:订单ID`, `name:用户名`, nil, nil)
+		Doc(`获取订单详情`, `ID:订单ID`, `name:用户名`, nil, nil).AddQuery(&query{})
 	saleOrderRouter.Put(`/detail/(\d+)`).
 		Doc(`更新订单详情`, `ID:订单ID`, `name:用户名`, &req{}, &res{})
 }

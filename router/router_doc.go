@@ -4,6 +4,8 @@ import (
 	"log"
 	"reflect"
 	"strings"
+
+	"github.com/lovego/apidoc/utils"
 )
 
 // Title set router Title.
@@ -48,6 +50,41 @@ func (r *R) Regex(d string) *R {
 func (r *R) Query(d string) *R {
 	r.Info.QueryComments = parseFieldCommentPair(d)
 	return r
+}
+
+// Add query by a struct
+func (r *R) AddQuery(d interface{}) *R {
+	v := reflect.ValueOf(d)
+	r.buildComment(v)
+
+	return r
+}
+func (r *R) buildComment(v reflect.Value) {
+	if v.Kind() == reflect.Ptr || v.Kind() == reflect.Interface {
+		v = v.Elem()
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		f0 := v.Type().Field(i)
+		f := v.Field(i)
+
+		if f0.Anonymous {
+			r.buildComment(f)
+			continue
+		} else if f.Kind() == reflect.Struct || f.Kind() == reflect.Interface {
+			log.Println(`Not support struct or interface field for AddQuery.`)
+			continue
+		}
+
+		name := f0.Tag.Get(`form`)
+		if name == `` {
+			name = f0.Name
+		}
+		r.Info.QueryComments = append(r.Info.QueryComments, fieldCommentPair{
+			Field:   name,
+			Comment: utils.CommentByTag(f0.Tag),
+		})
+	}
 }
 
 // Req set request body.

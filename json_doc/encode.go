@@ -25,6 +25,8 @@ import (
 	"sync"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/lovego/apidoc/utils"
 )
 
 // Marshal returns the JSON encoding of v.
@@ -1155,16 +1157,7 @@ func typeFields(t reflect.Type) []field {
 					}
 					// FOR DOC START :
 
-					comment := sf.Tag.Get(`doc`)
-					if comment == `` {
-						comment = sf.Tag.Get(`c`)
-					}
-					if comment == `` {
-						comment = sf.Tag.Get(`comment`)
-					}
-					if strings.Contains(sf.Tag.Get(`binding`), `required`) {
-						comment = `【必须】` + comment
-					}
+					comment := utils.CommentByTag(sf.Tag)
 					if comment != `` {
 						r := regexp.MustCompile(`[\s]+`)
 						comment = r.ReplaceAllString(comment, ` `)
